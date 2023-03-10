@@ -35,10 +35,13 @@ public class GoogleService {
         public String respondentId;
         public String questionText;
         public String answerText;
-        FormResponseRecord(String respondentId, String questionText, String answerText) {
+
+        public String questionIndex;
+        FormResponseRecord(String respondentId, String questionText, String answerText, String questionIndex) {
             this.respondentId = respondentId;
             this.questionText = questionText;
             this.answerText = answerText;
+            this.questionIndex = questionIndex;
         }
     }
     class FormsHelper {
@@ -84,11 +87,7 @@ public class GoogleService {
                     .setLowLabel(lowLabel)
                     .setHigh(high)
                     .setHighLabel(highLabel);
-            if (currentIndex == 0) {
-                question.setScaleQuestion(scaleQuestion).setQuestionId("123abcd");
-            } else {
-                question.setScaleQuestion(scaleQuestion);
-            }
+            question.setScaleQuestion(scaleQuestion).setQuestionId(String.valueOf(currentIndex));
             item.setQuestionItem(new QuestionItem().setQuestion(question));
             this.requests.add(new Request()
                     .setCreateItem(
@@ -142,7 +141,11 @@ public class GoogleService {
                     String answerText = answer.getTextAnswers().getAnswers().get(0).getValue();
                     System.out.println("Question: " + questionText);
                     System.out.println( "Answer: " + answerText);
-                    FormResponseRecord temp = new FormResponseRecord(String.valueOf(respondentId), questionText, answerText);
+                    FormResponseRecord temp = new FormResponseRecord(
+                            String.valueOf(respondentId),
+                            questionText,
+                            answerText,
+                            answer.getQuestionId());
                     formQuestionAnswers.add(temp);
                 }
                 System.out.println();
